@@ -7,12 +7,15 @@ const getRandomHex = (length) => {
     return result;
 }
 
-const findTheJackpot = (numberOfAttempts, numberToBeat) => {
+const findTheJackpot = (numberOfAttempts, numberToBeat, charToMatch=undefined) => {
+    let defaultChecker = charToMatch === undefined;
     for (let i = 0; i < numberOfAttempts; i++) {
         let hexCode = getRandomHex(numberToBeat);
-        let charToMatch = hexCode[0];
-        let numberToWin = 1;
-        for (let i = 1; i < 6; i++) {
+        if (defaultChecker) {
+            charToMatch = hexCode[0];
+        }
+        let numberToWin = 0;
+        for (let i = 0; i < numberToBeat; i++) {
             if (hexCode[i] == charToMatch) {
                 numberToWin++;
             }
@@ -23,4 +26,4 @@ const findTheJackpot = (numberOfAttempts, numberToBeat) => {
     }
 }
 
-findTheJackpot(1000, 3)
+findTheJackpot(1000000000, 10);
