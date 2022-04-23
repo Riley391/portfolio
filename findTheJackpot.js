@@ -1,26 +1,26 @@
-const getRandomHex = () => {
+const getRandomHex = (length) => {
     let result = "";
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < length; i++) {
         let digit = (Math.random() * 16 | 0).toString(16);
         result += digit;
     }
     return result;
 }
 
-const findTheJackpot = (numberOfAttempts) => {
+const findTheJackpot = (numberOfAttempts, numberToBeat) => {
     for (let i = 0; i < numberOfAttempts; i++) {
-        let hexCode = getRandomHex();
+        let hexCode = getRandomHex(numberToBeat);
         let charToMatch = hexCode[0];
-        let sixToWin = 1;
+        let numberToWin = 1;
         for (let i = 1; i < 6; i++) {
             if (hexCode[i] == charToMatch) {
-                sixToWin++;
+                numberToWin++;
             }
         }
-        if (sixToWin == 6) {
+        if (numberToWin == numberToBeat) {
             console.log(hexCode);
         }
     }
 }
 
-findTheJackpot(1000000)
+findTheJackpot(1000, 3)
