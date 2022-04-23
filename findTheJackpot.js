@@ -35,8 +35,8 @@ const howManyToTheJackpot = (numberToBeat, charToMatch=undefined) => {
         if (defaultChecker) {
             charToMatch = hexCode[0];
         }
-        for (let i = 0; i < numberToBeat; i++) {
-            if (hexCode[i] == charToMatch) {
+        for (let j = 0; j < numberToBeat; j++) {
+            if (hexCode[j] == charToMatch) {
                 numberToWin++;
             }
         }
