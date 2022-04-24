@@ -52,5 +52,5 @@ const howManyToTheJackpot = (numberToBeat, charToMatch=undefined) => {
     }
 }
 
-findTheJackpot(100000, 5);
-howManyToTheJackpot(6, "7");
+findTheJackpot(100, 3);
+howManyToTheJackpot(5, "7");
