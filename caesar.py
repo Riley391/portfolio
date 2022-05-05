@@ -1,4 +1,5 @@
 import random
+from tkinter import W
 import pandas as pd
 
 fileName = 'wordFrequency.xlsx'
@@ -17,11 +18,16 @@ def goAgain():
 
 # Add ability to search by index number (+1) instead of by word
 def findThatWord():
-    wordToFind = input("What word should I search my records for?: ")
-
+    wordToFind = input("What word or index number should I search my records for?: ")
+    print()
     try:
-        result = dictionary.index(wordToFind.lower())
-        print(f"{wordToFind.title()} is number {result} in my list of the most common words in the English language.")
+        try:
+            wordToFind = int(wordToFind)
+            result = dictionary[wordToFind - 1]
+            print(f"{result.title()} is located at number {wordToFind} in my list of most common words in the English language.")
+        except ValueError:
+            result = dictionary.index(wordToFind.lower())
+            print(f"{wordToFind.title()} is number {result} in my list of the most common words in the English language.")
         goAgain()
     except ValueError:
         print(f"{wordToFind.title()} is not in my records.")
