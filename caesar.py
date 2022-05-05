@@ -15,7 +15,7 @@ def goAgain():
     if answer == 'y':
         findThatWord()
 
-
+# Add ability to search by index number (+1) instead of by word
 def findThatWord():
     wordToFind = input("What word should I search my records for?: ")
 
