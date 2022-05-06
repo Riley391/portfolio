@@ -72,4 +72,13 @@ blackNightshade = new Plant('Black Nightshade', 'solanum nigrum', 'Solanaceae', 
     naturalized in much of North America. Though it is in the same family as potatoes and tomatoes, the berries of the \
     black nightshade plant can cause fever, gastrointestinal distress, and in rare cases, death.', 'images/black-nightshade.jpg', 'black-nightshade.html');
 
-const plants = [califHazel, blackNightshade];
+califHazel1 = new Plant('California Hazel', 'corylus cornuta var. californica', 'Betulaceae', 'Corylus', true, ['nut'], 'shrub', 
+    'The California Hazel is a large shrub native to the western coast of North America. \
+    It produces nuts which are almost identical to hazelnuts, and it can also be grown as a pleasing bonsai.', 'images/california-hazel.png', 'california-hazel.html');
+
+blackNightshade1 = new Plant('Black Nightshade', 'solanum nigrum', 'Solanaceae', 'Solanum', false, [], 'herb', 
+    'Black Nightshade is a small flowering plant which produces toxic berries. It is native to Europe but has now been \
+    naturalized in much of North America. Though it is in the same family as potatoes and tomatoes, the berries of the \
+    black nightshade plant can cause fever, gastrointestinal distress, and in rare cases, death.', 'images/black-nightshade.jpg', 'black-nightshade.html');
+
+const plants = [califHazel, blackNightshade, califHazel1, blackNightshade1];
