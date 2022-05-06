@@ -43,6 +43,7 @@ h1 {
     display: grid;
     background-color: 7e6551;
     gap: 30px;
+    /* TODO: define height using vh */
     grid-template: 200px 200px 200px / 1fr 1fr 1fr 1fr;
     margin: 30px;
 }
