@@ -5,6 +5,7 @@ let word = "BLAST";
 let keepPlaying = true;
 const letters = [];
 
+// Find a better way of converting string to array
 for (i = 0; i < word.length; i++) {
     letters[i] = word.substr(i, 1);
 }
@@ -67,6 +68,7 @@ function enterWord() {
     }
 }
 
+// TODO: Repeat characters don't count! (Unless they repeat in the hidden word as well)
 function turnYellow(i) {
     for (j = 1; j < 6; j++) {
         if (document.getElementById(i.toString()).innerHTML == letters[j - 1]) {
