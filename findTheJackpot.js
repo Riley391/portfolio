@@ -1,14 +1,24 @@
+// I'm tired of getting confused between Python and JS so I imported my own print() function
+const { print } = require('./module');
+
+// Generates a hex-code of length specified in the parameter
 const getRandomHex = (length) => {
+    // Start with a blank string
     let result = "";
+    // loop a number of times according to the length parameter
     for (let i = 0; i < length; i++) {
+        // assigns a random hex-digit (including 0) to digit
         let digit = (Math.random() * 16 | 0).toString(16);
+        // adds digit to the result string
         result += digit;
     }
     return result;
 }
 
+// takes parameters int(numberOfAttempts)
 const findTheJackpot = (numberOfAttempts, numberToBeat, charToMatch=undefined) => {
     let defaultChecker = charToMatch === undefined;
+    let matches = [];
     for (let i = 0; i < numberOfAttempts; i++) {
         let hexCode = getRandomHex(numberToBeat);
         if (defaultChecker) {
@@ -21,9 +31,10 @@ const findTheJackpot = (numberOfAttempts, numberToBeat, charToMatch=undefined) =
             }
         }
         if (numberToWin == numberToBeat) {
-            console.log(hexCode);
+            matches.push(hexCode);
         }
     }
+    return matches;
 }
 
 const howManyToTheJackpot = (numberToBeat, charToMatch=undefined) => {
@@ -43,7 +54,7 @@ const howManyToTheJackpot = (numberToBeat, charToMatch=undefined) => {
         if (numberToWin == numberToBeat) {
             let attempts = i == 1 ? "attempt" : "attempts";
             let formattedI = String(i).replace(/(.)(?=(\d{3})+$)/g,'$1,')
-            console.log(`It took ${formattedI} ${attempts} to find this hexadecimal number: ${hexCode}`);
+            return `It took ${formattedI} ${attempts} to find this hexadecimal number: ${hexCode}`;
         }
         else {
             numberToWin = 0;
@@ -52,5 +63,5 @@ const howManyToTheJackpot = (numberToBeat, charToMatch=undefined) => {
     }
 }
 
-findTheJackpot(100, 3);
-howManyToTheJackpot(5, "7");
+print(findTheJackpot(1000, 3));
+print(howManyToTheJackpot(5, "7"));
