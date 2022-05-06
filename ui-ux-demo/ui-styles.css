@@ -28,7 +28,7 @@ body {
     border-width: 1px;
     border-color: white;
     border-radius: 5px;
-    display: grid;
+    display: flex;
     justify-content: center;
     align-items: center;
     background-repeat: no-repeat;
