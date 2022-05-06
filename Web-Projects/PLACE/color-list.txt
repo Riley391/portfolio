@@ -1,0 +1,9 @@
+Red     Maroon
+Orange  Brown
+Yellow  Yellow-Green
+Green   Light Green
+Blue    Light Blue
+Indigo  Purple
+Violet  Pink
+White   Light Grey
+Black   Dark Grey
