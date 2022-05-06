@@ -22,12 +22,11 @@ body {
 }
 
 .plant {
-    height: 200px;
-    width: 400px;
     border-style: solid;
     border-width: 1px;
     border-color: white;
     border-radius: 5px;
+    /* TODO: Utilize the grid layout from css to organize the plants */
     display: grid;
     justify-content: center;
     align-items: center;
