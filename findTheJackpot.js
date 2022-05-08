@@ -49,8 +49,10 @@ const findTheJackpot = (numberOfAttempts, numberToBeat, charToMatch = undefined)
     return matches;
 };
 
+// Same functionality as the previous function, except that this function 
+// runs until it finds a match and then returns the number of attempts required to reach it
 const howManyToTheJackpot = (numberToBeat, charToMatch = undefined) => {
-    let defaultChecker = charToMatch === undefined;
+    let defaultChecker = typeof charToMatch === undefined;
     let numberToWin = 0;
     let i = 1;
     while (numberToWin < numberToBeat) {
