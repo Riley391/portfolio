@@ -28,6 +28,20 @@ class Plant {
     }
 }
 
+const print = (...args) => {
+    console.log(...args);
+}
+
+function callOnLoad(loadedPage="ui-ux-demo") {
+    if (loadedPage == "ui-ux-demo") {
+        populateSidebar(plants);
+        populatePlants(plants);
+    }
+    else if (loadedPage == "index.html") {
+        populateSidebar(plants);
+    }
+}
+
 // TODO: add link css to populatePlants and NOT to populatePlant
 function populatePlants(plants) {
     let plantDivs = [];
@@ -61,6 +75,16 @@ function populatePlant(plant) {
     plantDiv.style.width = '800px';
 
     document.getElementById('plantBox').appendChild(plantDiv);
+}
+
+function populateSidebar(plantArray) {
+    sortedPlants = plantArray.sort((a, b) => a.name.localeCompare(b.name));
+    for (let i = 0; i < plantArray.length; i++) {
+        plantLink = document.createElement("a");
+        plantLink.innerHTML = plantArray[i].name;
+        plantLink.href = plantArray[i].link;
+        document.getElementById("plantListSidebar").appendChild(plantLink);
+    }
 }
 
 califHazel = new Plant('California Hazel', 'corylus cornuta var. californica', 'Betulaceae', 'Corylus', true, ['nut'], 'shrub', 
