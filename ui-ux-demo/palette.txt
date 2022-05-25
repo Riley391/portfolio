@@ -1,0 +1,5 @@
+#04724D -- Green
+#1982C4 -- Blue
+#7E6551 -- Brown
+#EEE0CB -- Tan
+#000000 -- Black
