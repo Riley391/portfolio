@@ -3,18 +3,22 @@
 import csv
 dictionary = []
 
-with open("./wordle-helper/dictionary.csv", newline='') as csvfile:
-        spamreader = csv.reader(csvfile)
+with open("./wordle-helper/wordle-dictionary.csv", newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter='\t')
         for row in spamreader:
             dictionary.append(row)
 
-dictionary = dictionary[0]
+for i in range(len(dictionary)):
+    dictionary[i] = dictionary[i][0]
 
 for i in range(len(dictionary)):
     dictionary[i] = dictionary[i].lower()
 
-def WordleHelper(testWord):
-    testSet = ["album", "alloy", "algae", "alley", "glass"]
+""" for i in range(20):
+    print(dictionary[i]) """
+
+def WordleHelper(testWord, disallowedCharacters=[]):
+    # testSet = ["album", "alloy", "algae", "alley", "glass"]
     resultSet = []
     threshold = 0
     for character in testWord:
@@ -29,14 +33,15 @@ def WordleHelper(testWord):
                 testThreshold += 1
         if testThreshold == threshold:
             resultSet.append(word)
-    """ k = 0
-    while k < len(resultSet):
-        for letter in resultSet[k]:
+    for dude in resultSet:
+        for letter in dude:
             for character in disallowedCharacters:
                 if letter == character:
-                    resultSet.remove(resultSet[k])
-                    k -= 1
-        k += 1 """
+                    resultSet.remove(dude)
     return resultSet
 
-print(WordleHelper("all**"))
+def PrintWordleHelper(testWord, disallowedCharacters=[]):
+    for word in WordleHelper(testWord, disallowedCharacters):
+        print(word)
+
+PrintWordleHelper("*las*", ['b', 'k'])
