@@ -33,15 +33,24 @@ def WordleHelper(testWord, disallowedCharacters=[]):
                 testThreshold += 1
         if testThreshold == threshold:
             resultSet.append(word)
-    for dude in resultSet:
-        for letter in dude:
+    k = 0
+    while k < len(resultSet):
+        j = 0
+        while j < len(resultSet[k]):
             for character in disallowedCharacters:
-                if letter == character:
-                    resultSet.remove(dude)
+                if resultSet[k][j] == character:
+                    try:
+                        resultSet.remove(resultSet[k])
+                    finally:
+                        k = 0
+                        j -= 1
+                        break
+            j += 1
+        k += 1
     return resultSet
 
 def PrintWordleHelper(testWord, disallowedCharacters=[]):
     for word in WordleHelper(testWord, disallowedCharacters):
         print(word)
 
-PrintWordleHelper("*las*", ['b', 'k'])
+PrintWordleHelper("*las*", ['b', 'k', 'g', 'c', 'f'])
