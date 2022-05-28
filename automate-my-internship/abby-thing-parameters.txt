@@ -6,3 +6,5 @@ Second row: Copy paste from Studio
 Third row: First column: Question, Second column: Possible Answers, Third column: Correct Answers
 Fourth row-Nth row: Import data from csv file
 Make sure imported data has correct borders
+
+TODO: add ouput.xlsx to .gitignore
