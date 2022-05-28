@@ -1,0 +1,23 @@
+"Quiz Type","Question","Possible Answers","Correct Answers"
+"choice","How does a server that is running Web Services, DNS Services, and File Services know which service is being requested by a client?","Destination port,Destination IP address,Source Port,Source IP address,Packet format","Destination port"
+"check","Which of the following use the well-known port of TCP 443 and provide a secure web browsing service? (Choose three)","HTTPS,SSL,TLS,HTTP,FTP","TLS,SSL,HTTPS"
+"match","Match the application layer service with its well-known layer 4 port.",,"[[""IMAP over SSL"",""993""],[""POP3 over SSL"",""995""],[""SMTP TLS"",""587""],[""IMAP"",""143""],[""POP3"",""110""],[""SMTP"",""25""]]"
+"match","Map the protocols with its well-known TCP port.",,"[[""SSH"",""22""],[""RDP"",""3389""],[""HTTP"",""80""],[""Telnet"",""23""]]"
+"match","Match each protocol with its default UDP port.",,"[[""DNS"",""53""],[""DHCP Client:"",""68""],[""NTP"",""123""],[""DHCP Server:"",""67""]]"
+"match","Match the protocol with its well-known port.",,"[[""TCP 22"",""SFTP""],[""TCP 21/20"",""FTP""],[""TCP 445"",""SMB""],[""UDP 69"",""TFTP""]]"
+"match","Match the protocols with their default ports.",,"[[""LDAP over SSL"",""636""],[""SNMP"",""161/162""],[""Syslog"",""514""],[""LDAP"",""389""]]"
+"check","Which ports may you need to open for access between a Web Server and its back-end SQL database?
+(Choose three)","1433,1521,3306,21,23,6783","3306,1521,1433"
+"check","You are troubleshooting a VoIP application. Which of the following are ports that may need to be
+opened on the network in order for the application to work? (Choose four)","5060,5061,1720,1731,21,23","1731,1720,5061,5060"
+"choice","How does a server that is running Web Services, DNS Services, and File Services know which service is being requested by a client?","Destination port,Destination IP address,Source Port,Source IP address,Packet format","Destination port"
+"check","Which of the following use the well-known port of TCP 443 and provide a secure web browsing service? (Choose three)","HTTPS,SSL,TLS,HTTP,FTP","TLS,SSL,HTTPS"
+"match","Match the application layer service with its well-known layer 4 port.",,"[[""IMAP over SSL"",""993""],[""POP3 over SSL"",""995""],[""SMTP TLS"",""587""],[""IMAP"",""143""],[""POP3"",""110""],[""SMTP"",""25""]]"
+"match","Map the protocols with its well-known TCP port.",,"[[""SSH"",""22""],[""RDP"",""3389""],[""HTTP"",""80""],[""Telnet"",""23""]]"
+"match","Match each protocol with its default UDP port.",,"[[""DNS"",""53""],[""DHCP Client:"",""68""],[""NTP"",""123""],[""DHCP Server:"",""67""]]"
+"match","Match the protocol with its well-known port.",,"[[""TCP 22"",""SFTP""],[""TCP 21/20"",""FTP""],[""TCP 445"",""SMB""],[""UDP 69"",""TFTP""]]"
+"match","Match the protocols with their default ports.",,"[[""LDAP over SSL"",""636""],[""SNMP"",""161/162""],[""Syslog"",""514""],[""LDAP"",""389""]]"
+"check","Which ports may you need to open for access between a Web Server and its back-end SQL database?
+(Choose three)","1433,1521,3306,21,23,6783","3306,1521,1433"
+"check","You are troubleshooting a VoIP application. Which of the following are ports that may need to be
+opened on the network in order for the application to work? (Choose four)","5060,5061,1720,1731,21,23","1731,1720,5061,5060"
