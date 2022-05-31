@@ -6,7 +6,8 @@ import sys
 
 def buildDictionary():
     dictionary = []
-    with open("./wordle-helper/wordle-dictionary.csv", newline='') as csvfile:
+    # with open("./wordle-helper/wordle-dictionary.csv", newline='') as csvfile:
+    with open("./wordle-dictionary.csv", newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter='\t')
         for row in spamreader:
             dictionary.append(row)
