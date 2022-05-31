@@ -117,3 +117,5 @@ def gameStart(printMines=False, printNumbers=False):
     gameLoop(board, printMines, printNumbers)
 
 gameStart()
+
+# TODO: handle user input that generates errors
