@@ -12,6 +12,15 @@ def quitOrNot(string):
     if string == 'quit':
         quit()
 
+def customQuit():
+    playAgain = input("Would you like to play again? (y/n): ")
+    if playAgain == 'y':
+        gameStart()
+    elif playAgain == 'n':
+        quit()
+    else:
+        customQuit()
+
 def buildBoard(dimensions):
     board = []
     for x in range(dimensions):
@@ -46,7 +55,7 @@ def buildNumberBoard(board):
 def printBoard(board, mineOrNumber="mine"):
     boardLength = len(board)
     firstLine = "  "
-    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     for i in range(boardLength):
         newI = i
         while newI >= len(alphabet):
@@ -61,11 +70,24 @@ def printBoard(board, mineOrNumber="mine"):
     print("\n")
 
 def parseSpace(space):
-    quitOrNot(space)
-    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-    letter = alphabet.index(space[0])
-    number = space[slice(1, len(space))]
-    spaceList = [letter, int(number) - 1]
+    # quitOrNot(space)
+    realSpace = ""
+    spaceList = []
+    for character in space:
+        if character.isalpha():
+            realSpace += character
+    for character2 in space:
+        if not character2.isalpha():
+            realSpace += character2
+    realSpace = realSpace.upper()
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    try:
+        letter = alphabet.index(realSpace[0])
+        number = realSpace[slice(1, len(realSpace))]
+        spaceList = [letter, int(number) - 1]
+    except:
+        space = input("Which space would you like to check? (use 'A1' as your template): ")
+        spaceList = parseSpace(space)
     return spaceList
 
 def gameLoop(board, printMines=False, printNumbers=False):
@@ -78,7 +100,7 @@ def gameLoop(board, printMines=False, printNumbers=False):
     if changedCheck == checkAgainst:
         printBoard(board)
         print("You win!")
-        quit()
+        customQuit()
     printBoard(board, "default")
     if printMines:
         printBoard(board, "mine")
@@ -89,19 +111,21 @@ def gameLoop(board, printMines=False, printNumbers=False):
 def yourTurn(board):
     flagOrNot = input("Would you like to uncover a tile or mark a mine? ('tile' or 'mine'): ")
     quitOrNot(flagOrNot)
+    if flagOrNot.lower() != 'tile' and flagOrNot.lower() != 'mine':
+        yourTurn(board)
     space = input("Which space would you like to check? (use 'A1' as your template): ")
     parsedSpace = parseSpace(space)
-    if flagOrNot == 'tile':
+    if flagOrNot.lower() == 'tile':
         if board[parsedSpace[1]][parsedSpace[0]]["mine"] == "x":
             board[parsedSpace[1]][parsedSpace[0]]["default"] = "x"
             printBoard(board, "default")
             print("You lose!")
-            quit()
+            customQuit()
         elif board[parsedSpace[1]][parsedSpace[0]]["mine"] == "~":
             board[parsedSpace[1]][parsedSpace[0]]["default"] = board[parsedSpace[1]][parsedSpace[0]]["number"]
             board[parsedSpace[1]][parsedSpace[0]]["uncovered"] = True
             gameLoop(board)
-    elif flagOrNot == 'mine':
+    elif flagOrNot.lower() == 'mine':
         board[parsedSpace[1]][parsedSpace[0]]["default"] = "|"
         board[parsedSpace[1]][parsedSpace[0]]["uncovered"] = True
         gameLoop(board)
@@ -110,6 +134,8 @@ def yourTurn(board):
 def gameStart(printMines=False, printNumbers=False):
     clearConsole()
     dimensions = input("How large would you like the game board to be?: ")
+    if not dimensions.isnumeric():
+        gameStart()
     quitOrNot(dimensions)
     board = buildBoard(int(dimensions))
     board = plantMines(board)
@@ -117,5 +143,3 @@ def gameStart(printMines=False, printNumbers=False):
     gameLoop(board, printMines, printNumbers)
 
 gameStart()
-
-# TODO: handle user input that generates errors
