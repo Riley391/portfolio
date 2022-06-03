@@ -1,6 +1,35 @@
+# TODO: fix parseSpace such that parsedSpace[0] is the x coord and parsedSpace[1] is the y coord
+# TODO: fix recursion bug in reveal zeros function by making a board class
+
 import random
 import sys
 import os
+
+class Tile:
+    def __init__(self):
+        mineOrNot = random.randint(1, 5)
+        if mineOrNot == 3:
+            self.mine = "x"
+        else:
+            self.mine = "~"
+        self.number = 0
+        self.default = "~"
+        self.revealed = False
+        self.exploded = False
+    def flag(self):
+        if self.default == "|":
+            self.default = "~"
+        else:
+            self.default = "|"
+        if self.mine == "x":
+            self.revealed = True
+    def reveal(self):
+        if self.mine == "x":
+            self.default = self.mine
+            self.exploded = True
+        else:
+            self.default = self.number
+            self.revealed = True
 
 def clearConsole():
     if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
@@ -27,50 +56,62 @@ def buildBoard(dimensions):
         boardList = []
         board.append(boardList)
         for y in range(dimensions):
-            boardDictionary = { "mine": "", "number": 0, "default": "~", "uncovered": False }
-            board[x].append(boardDictionary)
-    return board
-
-def plantMines(board):
-    for x in range(len(board)):
-        for y in range(len(board[x])):
-            mineOrNot = random.randint(1, 3)
-            if mineOrNot == 3:
-                board[x][y]["mine"] = 'x'
-            else:
-                board[x][y]["mine"] = '~'
+            tile = Tile()
+            board[x].append(tile)
     return board
 
 def buildNumberBoard(board):
+    mineCheckMin = -1
+    mineCheckMax = 1
     for x in range(len(board)):
         for y in range(len(board[x])):
-            for z in range(-1, 2):
-                for za in range(-1, 2):
-                    if len(board) > x + z >= 0 and len(board) > y + za >= 0:
-                        if board[x + z][y + za] != board[x][y]:
-                            if board[x + z][y + za]["mine"] == "x":
-                                board[x][y]["number"] += 1
+            # check the 3x3 around this tile for mines
+            for z in range(mineCheckMin, mineCheckMax + 1):
+                for zz in range(mineCheckMin, mineCheckMax + 1):
+                    # make sure we're not checking tiles out of bounds
+                    if len(board) > x + z >= 0 and len(board) > y + zz >= 0:
+                        # make sure we're not checking the center tile of the 3x3
+                        if board[x + z][y + zz] != board[x][y]:
+                            if board[x + z][y + zz].mine == "x":
+                                board[x][y].number += 1
     return board
 
-def printBoard(board, mineOrNumber="mine"):
+def printBoard(board):
     boardLength = len(board)
     firstLine = "  "
     alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     for i in range(boardLength):
-        newI = i
-        while newI >= len(alphabet):
-            newI -= len(alphabet)
-        firstLine += alphabet[newI]
+        mutableI = i
+        while mutableI >= len(alphabet):
+            mutableI -= len(alphabet)
+        firstLine += alphabet[mutableI]
     print(firstLine)
+    # create numbered lines
     for x in range(len(board)):
         line = str(x + 1) + " "
         for y in range(len(board[x])):
-            line += str(board[x][y][mineOrNumber])
+            line += str(board[x][y].default)
         print(line)
     print("\n")
 
+def didIWin(board):
+    # check for win condition (all tiles correctly identified)
+    changedCheck = len(board) * len(board)
+    checkAgainst = 0
+    for x in range(len(board)):
+        for y in range(len(board[x])):
+            if board[x][y].revealed:
+                checkAgainst += 1
+    if changedCheck == checkAgainst:
+        printBoard(board)
+        gameOver(True)
+
+def gameOver(winOrLose):
+    print("You win!") if winOrLose else print("You lose!")
+    customQuit()
+
 def parseSpace(space):
-    # quitOrNot(space)
+    quitOrNot(space)
     realSpace = ""
     spaceList = []
     for character in space:
@@ -90,22 +131,24 @@ def parseSpace(space):
         spaceList = parseSpace(space)
     return spaceList
 
-def gameLoop(board, printMines=False, printNumbers=False):
-    changedCheck = len(board) * len(board)
-    checkAgainst = 0
-    for x in range(len(board)):
-        for y in range(len(board[x])):
-            if board[x][y]["uncovered"]:
-                checkAgainst += 1
-    if changedCheck == checkAgainst:
-        printBoard(board)
-        print("You win!")
-        customQuit()
-    printBoard(board, "default")
-    if printMines:
-        printBoard(board, "mine")
-    if printNumbers:
-        printBoard(board, "number")
+def revealAdjacentZeros(board, parsedSpace):
+    zeroCheckMin = -1
+    zeroCheckMax = 1
+    x = parsedSpace[1]
+    y = parsedSpace[0]
+    # check the 3x3 around this tile for zeros
+    for z in range(zeroCheckMin, zeroCheckMax + 1):
+        for zz in range(zeroCheckMin, zeroCheckMax + 1):
+            # make sure we're not checking tiles out of bounds
+            if len(board) > x + z >= 0 and len(board) > y + zz >= 0:
+                # make sure we're not checking the center tile of the 3x3
+                if board[x + z][y + zz] != board[x][y]:
+                    if board[x + z][y + zz].number == 0:
+                        board[x + z][y + zz].reveal
+                        revealAdjacentZeros(board, [y + zz, x + z])
+
+def gameLoop(board):
+    printBoard(board)
     yourTurn(board)
 
 def yourTurn(board):
@@ -115,31 +158,28 @@ def yourTurn(board):
         yourTurn(board)
     space = input("Which space would you like to check? (use 'A1' as your template): ")
     parsedSpace = parseSpace(space)
+    chosenTile = board[parsedSpace[1]][parsedSpace[0]]
     if flagOrNot.lower() == 'tile':
-        if board[parsedSpace[1]][parsedSpace[0]]["mine"] == "x":
-            board[parsedSpace[1]][parsedSpace[0]]["default"] = "x"
-            printBoard(board, "default")
-            print("You lose!")
-            customQuit()
-        elif board[parsedSpace[1]][parsedSpace[0]]["mine"] == "~":
-            board[parsedSpace[1]][parsedSpace[0]]["default"] = board[parsedSpace[1]][parsedSpace[0]]["number"]
-            board[parsedSpace[1]][parsedSpace[0]]["uncovered"] = True
+        chosenTile.reveal()
+        if chosenTile.exploded:
+            printBoard(board)
+            gameOver(False)
+        else:
+            # revealAdjacentZeros(board, parsedSpace)
             gameLoop(board)
     elif flagOrNot.lower() == 'mine':
-        board[parsedSpace[1]][parsedSpace[0]]["default"] = "|"
-        board[parsedSpace[1]][parsedSpace[0]]["uncovered"] = True
+        chosenTile.flag()
         gameLoop(board)
 
 
-def gameStart(printMines=False, printNumbers=False):
+def gameStart():
     clearConsole()
     dimensions = input("How large would you like the game board to be?: ")
     if not dimensions.isnumeric():
         gameStart()
     quitOrNot(dimensions)
     board = buildBoard(int(dimensions))
-    board = plantMines(board)
     board = buildNumberBoard(board)
-    gameLoop(board, printMines, printNumbers)
+    gameLoop(board)
 
 gameStart()
