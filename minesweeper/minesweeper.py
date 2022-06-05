@@ -1,5 +1,4 @@
 # TODO: fix parseSpace such that parsedSpace[0] is the x coord and parsedSpace[1] is the y coord
-# TODO: fix recursion bug in reveal zeros function by making a board class
 
 import random
 import sys
@@ -31,6 +30,71 @@ class Tile:
             self.default = self.number
             self.revealed = True
 
+class Board:
+    def __init__(self, dimensions):
+        self.board = []
+        for x in range(dimensions):
+            boardList = []
+            self.board.append(boardList)
+            for y in range(dimensions):
+                tile = Tile()
+                self.board[x].append(tile)
+    def buildNumberBoard(self):
+        mineCheckMin = -1
+        mineCheckMax = 1
+        for x in range(len(self.board)):
+            for y in range(len(self.board[x])):
+                # check the 3x3 around this tile for mines
+                for z in range(mineCheckMin, mineCheckMax + 1):
+                    for zz in range(mineCheckMin, mineCheckMax + 1):
+                        # make sure we're not checking tiles out of bounds
+                        if len(self.board) > x + z >= 0 and len(self.board) > y + zz >= 0:
+                            # make sure we're not checking the center tile of the 3x3
+                            if self.board[x + z][y + zz] != self.board[x][y]:
+                                if self.board[x + z][y + zz].mine == "x":
+                                    self.board[x][y].number += 1
+    def printBoard(self):
+        boardLength = len(self.board)
+        firstLine = "  "
+        alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        for i in range(boardLength):
+            mutableI = i
+            while mutableI >= len(alphabet):
+                mutableI -= len(alphabet)
+            firstLine += alphabet[mutableI]
+        print(firstLine)
+        for x in range(len(self.board)):
+            line = str(x + 1) + " "
+            for y in range(len(self.board[x])):
+                line += str(self.board[x][y].default)
+            print(line)
+        print("\n")
+    def didIWin(self):
+        # check for win condition (all tiles correctly identified)
+        changedCheck = len(self.board) * len(self.board)
+        checkAgainst = 0
+        for x in range(len(self.board)):
+            for y in range(len(self.board[x])):
+                if self.board[x][y].revealed:
+                    checkAgainst += 1
+        if changedCheck == checkAgainst:
+            gameOver(True)
+    def revealAdjacentZeros(self, parsedSpace):
+        zeroCheckMin = -1
+        zeroCheckMax = 1
+        x = parsedSpace[1]
+        y = parsedSpace[0]
+        # check the 3x3 around this tile for zeros
+        for z in range(zeroCheckMin, zeroCheckMax + 1):
+            for zz in range(zeroCheckMin, zeroCheckMax + 1):
+                # make sure we're not checking tiles out of bounds
+                if len(self.board) > x + z >= 0 and len(self.board) > y + zz >= 0:
+                    # make sure we're not checking the center tile of the 3x3
+                    if self.board[x + z][y + zz] != self.board[x][y]:
+                        if self.board[x + z][y + zz].number == 0 and self.board[x + z][y + zz].revealed == False:
+                            self.board[x + z][y + zz].reveal()
+                            self.revealAdjacentZeros([y + zz, x + z])
+
 def clearConsole():
     if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
         os.system('clear')
@@ -49,62 +113,6 @@ def customQuit():
         quit()
     else:
         customQuit()
-
-def buildBoard(dimensions):
-    board = []
-    for x in range(dimensions):
-        boardList = []
-        board.append(boardList)
-        for y in range(dimensions):
-            tile = Tile()
-            board[x].append(tile)
-    return board
-
-def buildNumberBoard(board):
-    mineCheckMin = -1
-    mineCheckMax = 1
-    for x in range(len(board)):
-        for y in range(len(board[x])):
-            # check the 3x3 around this tile for mines
-            for z in range(mineCheckMin, mineCheckMax + 1):
-                for zz in range(mineCheckMin, mineCheckMax + 1):
-                    # make sure we're not checking tiles out of bounds
-                    if len(board) > x + z >= 0 and len(board) > y + zz >= 0:
-                        # make sure we're not checking the center tile of the 3x3
-                        if board[x + z][y + zz] != board[x][y]:
-                            if board[x + z][y + zz].mine == "x":
-                                board[x][y].number += 1
-    return board
-
-def printBoard(board):
-    boardLength = len(board)
-    firstLine = "  "
-    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    for i in range(boardLength):
-        mutableI = i
-        while mutableI >= len(alphabet):
-            mutableI -= len(alphabet)
-        firstLine += alphabet[mutableI]
-    print(firstLine)
-    # create numbered lines
-    for x in range(len(board)):
-        line = str(x + 1) + " "
-        for y in range(len(board[x])):
-            line += str(board[x][y].default)
-        print(line)
-    print("\n")
-
-def didIWin(board):
-    # check for win condition (all tiles correctly identified)
-    changedCheck = len(board) * len(board)
-    checkAgainst = 0
-    for x in range(len(board)):
-        for y in range(len(board[x])):
-            if board[x][y].revealed:
-                checkAgainst += 1
-    if changedCheck == checkAgainst:
-        printBoard(board)
-        gameOver(True)
 
 def gameOver(winOrLose):
     print("You win!") if winOrLose else print("You lose!")
@@ -131,41 +139,27 @@ def parseSpace(space):
         spaceList = parseSpace(space)
     return spaceList
 
-def revealAdjacentZeros(board, parsedSpace):
-    zeroCheckMin = -1
-    zeroCheckMax = 1
-    x = parsedSpace[1]
-    y = parsedSpace[0]
-    # check the 3x3 around this tile for zeros
-    for z in range(zeroCheckMin, zeroCheckMax + 1):
-        for zz in range(zeroCheckMin, zeroCheckMax + 1):
-            # make sure we're not checking tiles out of bounds
-            if len(board) > x + z >= 0 and len(board) > y + zz >= 0:
-                # make sure we're not checking the center tile of the 3x3
-                if board[x + z][y + zz] != board[x][y]:
-                    if board[x + z][y + zz].number == 0:
-                        board[x + z][y + zz].reveal
-                        revealAdjacentZeros(board, [y + zz, x + z])
-
 def gameLoop(board):
-    printBoard(board)
+    board.printBoard()
     yourTurn(board)
 
 def yourTurn(board):
+    board.didIWin()
     flagOrNot = input("Would you like to uncover a tile or mark a mine? ('tile' or 'mine'): ")
     quitOrNot(flagOrNot)
     if flagOrNot.lower() != 'tile' and flagOrNot.lower() != 'mine':
         yourTurn(board)
     space = input("Which space would you like to check? (use 'A1' as your template): ")
     parsedSpace = parseSpace(space)
-    chosenTile = board[parsedSpace[1]][parsedSpace[0]]
+    chosenTile = board.board[parsedSpace[1]][parsedSpace[0]]
     if flagOrNot.lower() == 'tile':
         chosenTile.reveal()
         if chosenTile.exploded:
-            printBoard(board)
+            board.printBoard()
             gameOver(False)
         else:
-            # revealAdjacentZeros(board, parsedSpace)
+            if chosenTile.number == 0:
+                board.revealAdjacentZeros(parsedSpace)
             gameLoop(board)
     elif flagOrNot.lower() == 'mine':
         chosenTile.flag()
@@ -178,8 +172,8 @@ def gameStart():
     if not dimensions.isnumeric():
         gameStart()
     quitOrNot(dimensions)
-    board = buildBoard(int(dimensions))
-    board = buildNumberBoard(board)
+    board = Board(dimensions=int(dimensions))
+    board.buildNumberBoard()
     gameLoop(board)
 
 gameStart()
