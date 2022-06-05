@@ -1,5 +1,6 @@
 # TODO: fix parseSpace such that parsedSpace[0] is the x coord and parsedSpace[1] is the y coord
 
+import tkinter as tk
 import random
 import sys
 import os
@@ -176,4 +177,52 @@ def gameStart():
     board.buildNumberBoard()
     gameLoop(board)
 
-gameStart()
+# gameStart()
+
+window = tk.Tk()
+window.title("Minesweeper")
+
+""" e = tk.Entry(window, width=35, borderwidth=5)
+e.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
+
+e.insert(0, "How large would you like the game board to be?: ") """
+
+def button_click(button, tile):
+    tile.reveal()
+    button['text'] = tile.default
+
+# button_1 = tk.Button(window, text="1", padx=40, pady=20, command=button_add)
+
+testBoard = Board(3)
+testBoard.buildNumberBoard()
+
+button1 = tk.Button(window, text=testBoard.board[0][0].default, padx=50, pady=50, command=lambda: button_click(button1, testBoard.board[0][0]))
+button2 = tk.Button(window, text=testBoard.board[0][1].default, padx=50, pady=50, command=lambda: button_click(button2, testBoard.board[0][1]))
+button3 = tk.Button(window, text=testBoard.board[0][2].default, padx=50, pady=50, command=lambda: button_click(button3, testBoard.board[0][2]))
+button4 = tk.Button(window, text=testBoard.board[1][0].default, padx=50, pady=50, command=lambda: button_click(button4, testBoard.board[1][0]))
+button5 = tk.Button(window, text=testBoard.board[1][1].default, padx=50, pady=50, command=lambda: button_click(button5, testBoard.board[1][1]))
+button6 = tk.Button(window, text=testBoard.board[1][2].default, padx=50, pady=50, command=lambda: button_click(button6, testBoard.board[1][2]))
+button7 = tk.Button(window, text=testBoard.board[2][0].default, padx=50, pady=50, command=lambda: button_click(button7, testBoard.board[2][0]))
+button8 = tk.Button(window, text=testBoard.board[2][1].default, padx=50, pady=50, command=lambda: button_click(button8, testBoard.board[2][1]))
+button9 = tk.Button(window, text=testBoard.board[2][2].default, padx=50, pady=50, command=lambda: button_click(button9, testBoard.board[2][2]))
+
+button1.grid(row=0, column=0)
+button2.grid(row=0, column=1)
+button3.grid(row=0, column=2)
+button4.grid(row=1, column=0)
+button5.grid(row=1, column=1)
+button6.grid(row=1, column=2)
+button7.grid(row=2, column=0)
+button8.grid(row=2, column=1)
+button9.grid(row=2, column=2)
+
+""" buttonList = []
+for x in range(len(testBoard.board)):
+    tempList = []
+    buttonList.append(tempList)
+    for y in range(len(testBoard.board[x])):
+        buttonList[x].append(tk.Button(window, text=testBoard.board[x][y].default, padx=10, pady=10, command=lambda: button_click(buttonList[x][y], testBoard.board[x][y])))
+        buttonList[x][y].grid(row=x + 1, column=y) """
+
+
+window.mainloop()
