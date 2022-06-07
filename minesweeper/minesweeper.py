@@ -1,4 +1,5 @@
 # TODO: fix parseSpace such that parsedSpace[0] is the x coord and parsedSpace[1] is the y coord
+# TODO: add win conditions to Minesweeper window
 
 import tkinter as tk
 import random
