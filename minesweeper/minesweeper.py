@@ -13,14 +13,14 @@ class Tile:
         else:
             self.mine = "~"
         self.number = 0
-        self.default = "~"
+        self.default = " "
         self.revealed = False
         self.exploded = False
     def flag(self):
-        if self.default == "|":
-            self.default = "~"
+        if self.default == "P":
+            self.default = " "
         else:
-            self.default = "|"
+            self.default = "P"
         if self.mine == "x":
             self.revealed = True
     def reveal(self):
@@ -214,7 +214,7 @@ buttonList = []
 for x in range(len(testBoard.board)):
     buttonList.append([])
     for y in range(len(testBoard.board[x])):
-        tempButton = tk.Button(window, text=testBoard.board[x][y].default, padx=10, pady=10)
+        tempButton = tk.Button(window, text=testBoard.board[x][y].default, width=4, height=2)
         buttonList[x].append(tempButton)
         buttonList[x][y].configure(command=lambda button=buttonList[x][y], tile=testBoard.board[x][y], x=x, y=y: button_click(button, tile, x, y))
         buttonList[x][y].bind('<Button-3>', lambda button=buttonList[x][y], tile=testBoard.board[x][y]: button_flag(button, tile))
