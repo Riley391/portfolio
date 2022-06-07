@@ -1,5 +1,6 @@
 # TODO: fix parseSpace such that parsedSpace[0] is the x coord and parsedSpace[1] is the y coord
-# TODO: add win conditions to Minesweeper window
+# TODO: add win/lose text to window
+# TODO: take input from window to define dimensions for game board
 
 import tkinter as tk
 import random
@@ -17,11 +18,15 @@ class Tile:
         self.default = " "
         self.revealed = False
         self.exploded = False
+        self.flagged = False
     def flag(self):
         if self.default == "P":
             self.default = " "
+            self.flagged = False
+            self.revealed = False
         else:
             self.default = "P"
+            self.flagged = True
         if self.mine == "x":
             self.revealed = True
     def reveal(self):
@@ -55,6 +60,8 @@ class Board:
                             if self.board[x + z][y + zz] != self.board[x][y]:
                                 if self.board[x + z][y + zz].mine == "x":
                                     self.board[x][y].number += 1
+                if self.board[x][y].mine == 'x':
+                    self.board[x][y].number = -1
     def printBoard(self):
         boardLength = len(self.board)
         firstLine = "  "
@@ -111,7 +118,7 @@ def quitOrNot(string):
 def customQuit():
     playAgain = input("Would you like to play again? (y/n): ")
     if playAgain == 'y':
-        gameStart()
+        startWindow()
     elif playAgain == 'n':
         quit()
     else:
@@ -142,7 +149,7 @@ def parseSpace(space):
         spaceList = parseSpace(space)
     return spaceList
 
-def gameLoop(board):
+""" def gameLoop(board):
     board.printBoard()
     yourTurn(board)
 
@@ -177,49 +184,64 @@ def gameStart():
     quitOrNot(dimensions)
     board = Board(dimensions=int(dimensions))
     board.buildNumberBoard()
-    gameLoop(board)
-
-# gameStart()
+    gameLoop(board) """
 
 window = tk.Tk()
 window.title("Minesweeper")
 
-""" e = tk.Entry(window, width=48, borderwidth=5)
-e.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
+def doNothing():
+    return
 
-e.insert(0, "How large would you like the game board to be?: ") """
-
-def button_click(button, tile, x, y):
-    tile.reveal()
-    if tile.number == 0:
-        testBoard.revealAdjacentZeros([y, x])
-    for x in range(len(testBoard.board)):
-        for y in range(len(testBoard.board[x])):
-            if testBoard.board[x][y].revealed and testBoard.board[x][y].mine == "x":
-                buttonList[x][y].configure(bg='red')
-            elif testBoard.board[x][y].revealed:
-                buttonList[x][y].configure(text=testBoard.board[x][y].default)
-                buttonList[x][y].configure(bg='gray')
-    button.configure(text=tile.default)
-    button.configure(bg='gray')
+def button_click(button, tile, x, y, board, buttonList):
+    if not tile.flagged:
+        if tile.mine == 'x':
+            for x in range(len(buttonList)):
+                for y in range(len(buttonList[x])):
+                    buttonList[x][y].configure(command=doNothing)
+                    buttonList[x][y].unbind("<Button-3>")
+        tile.reveal()
+        if tile.number == 0:
+            board.revealAdjacentZeros([y, x])
+        for x in range(len(board.board)):
+            for y in range(len(board.board[x])):
+                if board.board[x][y].flagged:
+                    buttonList[x][y].configure(bg='orange')
+                elif board.board[x][y].revealed:
+                    buttonList[x][y].configure(text=board.board[x][y].default)
+                    buttonList[x][y].configure(bg='gray')
+        button.configure(text=tile.default)
+        if button['text'] == 'x':
+            button.configure(bg='red')
 
 def button_flag(button, tile):
     tile.flag()
+    if tile.default == ' ':
+        button.widget.configure(bg='white')
+    else:
+        button.widget.configure(bg='orange')
     button.widget.configure(text=tile.default)
-    button.widget.configure(bg='red')
 
-testBoard = Board(20)
-testBoard.buildNumberBoard()
+def buildGeometryString(dimensions):
+    result = str(dimensions * 36) + 'x' + str((dimensions * 36) + 200)
+    return result
 
-buttonList = []
-for x in range(len(testBoard.board)):
-    buttonList.append([])
-    for y in range(len(testBoard.board[x])):
-        tempButton = tk.Button(window, text=testBoard.board[x][y].default, width=4, height=2)
-        buttonList[x].append(tempButton)
-        buttonList[x][y].configure(command=lambda button=buttonList[x][y], tile=testBoard.board[x][y], x=x, y=y: button_click(button, tile, x, y))
-        buttonList[x][y].bind('<Button-3>', lambda button=buttonList[x][y], tile=testBoard.board[x][y]: button_flag(button, tile))
-        buttonList[x][y].grid(row=x + 1, column=y)
+def startWindow(dimensions):
+    testBoard = Board(dimensions)
+    testBoard.buildNumberBoard()
+    buttonList = []
+    for x in range(len(testBoard.board)):
+        buttonList.append([])
+        for y in range(len(testBoard.board[x])):
+            tempButton = tk.Button(window, text=testBoard.board[x][y].default, width=4, height=2, bg='white')
+            buttonList[x].append(tempButton)
+            buttonList[x][y].configure(command=lambda button=buttonList[x][y], tile=testBoard.board[x][y], x=x, y=y, board=testBoard, buttonList=buttonList: button_click(button, tile, x, y, board, buttonList))
+            buttonList[x][y].bind('<Button-3>', lambda button=buttonList[x][y], tile=testBoard.board[x][y]: button_flag(button, tile))
+            buttonList[x][y].grid(row=x + 1, column=y)
+    e = tk.Entry(window, width=buttonList[0][0]['width']*dimensions, bg='light blue')
+    e.grid(row=0, column=0, columnspan=dimensions*dimensions)
+    e.insert(0, "How large would you like the game board to be?: ")
+    resetButton = tk.Button(window, text="Reset", height=2, width=buttonList[0][0]['width']*dimensions, bg='light blue', command=lambda dimensions=dimensions: startWindow(dimensions))
+    resetButton.grid(row=(dimensions*dimensions)+2, column=0, columnspan=dimensions*dimensions)
+    window.mainloop()
 
-
-window.mainloop()
+startWindow(15)
