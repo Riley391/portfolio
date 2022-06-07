@@ -1,4 +1,5 @@
 # TODO: fix parseSpace such that parsedSpace[0] is the x coord and parsedSpace[1] is the y coord
+# TODO: When generating tkinter buttons, tile default always returns the default value from the last tile no matter which tile is clickedS
 
 import tkinter as tk
 import random
@@ -92,9 +93,10 @@ class Board:
                 if len(self.board) > x + z >= 0 and len(self.board) > y + zz >= 0:
                     # make sure we're not checking the center tile of the 3x3
                     if self.board[x + z][y + zz] != self.board[x][y]:
-                        if self.board[x + z][y + zz].number == 0 and self.board[x + z][y + zz].revealed == False:
+                        if self.board[x + z][y + zz].revealed == False:
                             self.board[x + z][y + zz].reveal()
-                            self.revealAdjacentZeros([y + zz, x + z])
+                            if self.board[x + z][y + zz].number == 0:
+                                self.revealAdjacentZeros([y + zz, x + z])
 
 def clearConsole():
     if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
@@ -182,47 +184,42 @@ def gameStart():
 window = tk.Tk()
 window.title("Minesweeper")
 
-""" e = tk.Entry(window, width=35, borderwidth=5)
+""" e = tk.Entry(window, width=48, borderwidth=5)
 e.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
 
 e.insert(0, "How large would you like the game board to be?: ") """
 
-def button_click(button, tile):
+def button_click(button, tile, x, y):
     tile.reveal()
-    button['text'] = tile.default
+    if tile.number == 0:
+        testBoard.revealAdjacentZeros([y, x])
+    for x in range(len(testBoard.board)):
+        for y in range(len(testBoard.board[x])):
+            if testBoard.board[x][y].revealed and testBoard.board[x][y].mine == "x":
+                buttonList[x][y].configure(bg='red')
+            elif testBoard.board[x][y].revealed:
+                buttonList[x][y].configure(text=testBoard.board[x][y].default)
+                buttonList[x][y].configure(bg='gray')
+    button.configure(text=tile.default)
+    button.configure(bg='gray')
 
-# button_1 = tk.Button(window, text="1", padx=40, pady=20, command=button_add)
+def button_flag(button, tile):
+    tile.flag()
+    button.widget.configure(text=tile.default)
+    button.widget.configure(bg='red')
 
-testBoard = Board(3)
+testBoard = Board(20)
 testBoard.buildNumberBoard()
 
-button1 = tk.Button(window, text=testBoard.board[0][0].default, padx=50, pady=50, command=lambda: button_click(button1, testBoard.board[0][0]))
-button2 = tk.Button(window, text=testBoard.board[0][1].default, padx=50, pady=50, command=lambda: button_click(button2, testBoard.board[0][1]))
-button3 = tk.Button(window, text=testBoard.board[0][2].default, padx=50, pady=50, command=lambda: button_click(button3, testBoard.board[0][2]))
-button4 = tk.Button(window, text=testBoard.board[1][0].default, padx=50, pady=50, command=lambda: button_click(button4, testBoard.board[1][0]))
-button5 = tk.Button(window, text=testBoard.board[1][1].default, padx=50, pady=50, command=lambda: button_click(button5, testBoard.board[1][1]))
-button6 = tk.Button(window, text=testBoard.board[1][2].default, padx=50, pady=50, command=lambda: button_click(button6, testBoard.board[1][2]))
-button7 = tk.Button(window, text=testBoard.board[2][0].default, padx=50, pady=50, command=lambda: button_click(button7, testBoard.board[2][0]))
-button8 = tk.Button(window, text=testBoard.board[2][1].default, padx=50, pady=50, command=lambda: button_click(button8, testBoard.board[2][1]))
-button9 = tk.Button(window, text=testBoard.board[2][2].default, padx=50, pady=50, command=lambda: button_click(button9, testBoard.board[2][2]))
-
-button1.grid(row=0, column=0)
-button2.grid(row=0, column=1)
-button3.grid(row=0, column=2)
-button4.grid(row=1, column=0)
-button5.grid(row=1, column=1)
-button6.grid(row=1, column=2)
-button7.grid(row=2, column=0)
-button8.grid(row=2, column=1)
-button9.grid(row=2, column=2)
-
-""" buttonList = []
+buttonList = []
 for x in range(len(testBoard.board)):
-    tempList = []
-    buttonList.append(tempList)
+    buttonList.append([])
     for y in range(len(testBoard.board[x])):
-        buttonList[x].append(tk.Button(window, text=testBoard.board[x][y].default, padx=10, pady=10, command=lambda: button_click(buttonList[x][y], testBoard.board[x][y])))
-        buttonList[x][y].grid(row=x + 1, column=y) """
+        tempButton = tk.Button(window, text=testBoard.board[x][y].default, padx=10, pady=10)
+        buttonList[x].append(tempButton)
+        buttonList[x][y].configure(command=lambda button=buttonList[x][y], tile=testBoard.board[x][y], x=x, y=y: button_click(button, tile, x, y))
+        buttonList[x][y].bind('<Button-3>', lambda button=buttonList[x][y], tile=testBoard.board[x][y]: button_flag(button, tile))
+        buttonList[x][y].grid(row=x + 1, column=y)
 
 
 window.mainloop()
