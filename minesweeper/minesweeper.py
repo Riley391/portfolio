@@ -1,5 +1,4 @@
 # TODO: fix parseSpace such that parsedSpace[0] is the x coord and parsedSpace[1] is the y coord
-# TODO: When generating tkinter buttons, tile default always returns the default value from the last tile no matter which tile is clickedS
 
 import tkinter as tk
 import random
